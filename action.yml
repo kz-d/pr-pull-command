@@ -1,0 +1,40 @@
+name: 'Add Pull Command to Pull Request'
+description: 'This is a GitHub Actions that provides a command to pull the branch of a pull request for reviewers.'
+
+inputs:
+  github-token:
+    description: |
+      The GitHub token used to create an authenticated client
+    required: true
+      
+runs:
+  using: 'composite'
+  steps:
+    - name: Check if triggered by a pull request
+      run: |
+        if [[ "${{ github.event_name }}" != "pull_request" || "${{ github.event.action }}" != "opened" ]]; then
+          echo "This action runs only for pull request opened event."
+          exit 1
+        fi
+      shell: bash
+
+    - name: Add a pull command to the description section of a GitHub Pull Request
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{inputs.github-token}}
+        script: |
+          const prNumber = context.payload.pull_request.number;
+          const repoName = context.payload.repository.name;
+          const repoOwner = context.payload.repository.owner.login;
+          const currentBody = context.payload.pull_request.body;
+          const branchName = context.payload.pull_request.head.ref;
+
+          const newBody = `\`\`\`bash\ngit fetch upstream pull/${prNumber}/head:${branchName} && git checkout ${branchName}\n\`\`\`\n\n${currentBody ?? ''}`;
+
+          github.rest.pulls.update({
+            owner: repoOwner,
+            repo: repoName,
+            pull_number: prNumber,
+            body: newBody,
+          });
+  
