@@ -1,0 +1,21 @@
+name: add pull command
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  add-pull-command:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Add a pull command to the description section of a GitHub Pull Request
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
