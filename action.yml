@@ -29,12 +29,20 @@ runs:
           const currentBody = context.payload.pull_request.body;
           const branchName = context.payload.pull_request.head.ref;
 
-          const newBody = `\`\`\`bash\ngit fetch upstream pull/${prNumber}/head:${branchName} && git checkout ${branchName}\n\`\`\`\n\n${currentBody ?? ''}`;
+          const message = `\`\`\`bash\ngit fetch upstream pull/${prNumber}/head:${branchName} && git checkout ${branchName}\n\`\`\``
+          const newBody = `${message}\n\n${currentBody ?? ''}`;
 
           github.rest.pulls.update({
             owner: repoOwner,
             repo: repoName,
             pull_number: prNumber,
             body: newBody,
+          });
+
+          github.rest.issues.createComment({
+            owner: repoOwner,
+            repo: repoName,
+            issue_number: prNumber,
+            body: message
           });
   
