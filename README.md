@@ -11,6 +11,7 @@ git fetch upstream pull/1/head:feature/add_comment && git checkout feature/add_c
 
 <img width="910" alt="sample_pr" src="https://github.com/kz-d/pr-pull-command/assets/116164465/ef350de4-8678-4369-9313-ad71e3ab2bd6">
 
+**NOTE:** =>v1.1,the pull command is also added to the comments section. This feature was implemented to prevent the pull command from being overwritten and lost if a reviewer edits and saves the Pull Request description.
 
 ## Motivation
 If you often find yourself manually copying the branch name or pull request number from the GitHub interface and merging it with your local command every time you receive a pull request for review, this tool might offer a slight boost to your workflow.
